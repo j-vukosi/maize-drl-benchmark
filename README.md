@@ -180,15 +180,19 @@ These measurements describe the **implemented benchmark configurations**.
 ```text
 maize-drl-benchmark/
 │
-├── benchmark.yaml
-├── run_benchmark.sh
-├── scenarios/
+├── configs/
+├── docs/
 ├── external/
 │   └── aquacropgymnasium/
 │       └── weather_data/
-│           └── champion_climate.txt
-├── outputs/
-└── README.md
+├── requirements/
+├── scenarios/
+├── src/
+├── tests/
+├── CITATIONS.bib
+├── LICENSE
+├── README.md
+└── pyproject.toml
 ```
 
 The required climate data is included in the repository tree.
