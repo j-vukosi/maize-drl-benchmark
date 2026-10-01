@@ -181,7 +181,6 @@ These measurements describe the **implemented benchmark configurations**.
 maize-drl-benchmark/
 │
 ├── configs/
-├── docs/
 ├── external/
 │   └── aquacropgymnasium/
 │       └── weather_data/
