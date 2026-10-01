@@ -134,15 +134,15 @@ Uncertainty is reported using **95% bootstrap confidence intervals based on the 
 
 ## 📈 Selected Results
 
-### Mean Dry Yield
+## Mean Dry Yield
 
-| Scenario      |       PPO | CrossQ |    DSAC-T | DreamerV3 |
-| ------------- | --------: | -----: | --------: | --------: |
-| Extreme Dry   | **13.80** |      — |         — |      4.56 |
-| Dry           | **13.34** |      — |         — |         — |
-| Normal        | **13.57** |      — |         — |         — |
-| Limited Water | **12.83** |      — |         — |         — |
-| Wet           |     13.25 |      — | **13.27** |     13.09 |
+| Scenario | PPO | CrossQ | DSAC-T | DreamerV3 |
+|---|---:|---:|---:|---:|
+| Extreme Dry | **13.80** | 12.81 | 6.35 | 4.56 |
+| Dry | **13.34** | 12.70 | 12.55 | 12.74 |
+| Normal | **13.57** | 12.92 | 11.39 | 11.76 |
+| Limited Water | **12.83** | 12.35 | 11.99 | 11.79 |
+| Wet | 13.25 | 12.78 | **13.27** | 13.09 |
 
 PPO recorded the highest mean yield in four of the five benchmark scenarios, while DSAC-T recorded the highest mean yield under wet conditions.
 
