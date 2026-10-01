@@ -1,0 +1,27 @@
+{
+  "name": "normal",
+  "description": "Central seasonal-rainfall years representing ordinary interannual variability.",
+  "quantile_bounds": {
+    "seasonal_precip_quantile_min": 0.35,
+    "seasonal_precip_quantile_max": 0.65
+  },
+  "train_years": [
+    1990,
+    1994,
+    1995,
+    2005,
+    2006,
+    2010,
+    2018
+  ],
+  "validation_years": [
+    1999,
+    2007
+  ],
+  "test_years": [
+    1988,
+    1998
+  ],
+  "climate_file": "upstreams\\aquacropgymnasium\\weather_data\\champion_climate.txt",
+  "climate_sha256": "416e3596623d7956575055e7db2edc673da6af90cdf2a76993ce83d81e7a1bbb"
+}

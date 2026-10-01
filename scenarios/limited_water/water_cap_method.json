@@ -1,0 +1,6 @@
+{
+  "method": "AquaCrop soil-moisture-target reference policy",
+  "reference_smt_percent": 80.0,
+  "allocation_fraction": 0.7,
+  "notes": "Caps are calculated independently for each year and do not use DRL outcomes."
+}

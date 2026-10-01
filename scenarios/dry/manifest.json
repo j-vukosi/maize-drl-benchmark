@@ -1,0 +1,23 @@
+{
+  "name": "dry",
+  "description": "Moderate drought represented by the 15th to 35th seasonal-rainfall percentiles.",
+  "quantile_bounds": {
+    "seasonal_precip_quantile_min": 0.15,
+    "seasonal_precip_quantile_max": 0.35
+  },
+  "train_years": [
+    1985,
+    1997,
+    2013,
+    2016,
+    2017
+  ],
+  "validation_years": [
+    2001
+  ],
+  "test_years": [
+    1989
+  ],
+  "climate_file": "upstreams\\aquacropgymnasium\\weather_data\\champion_climate.txt",
+  "climate_sha256": "416e3596623d7956575055e7db2edc673da6af90cdf2a76993ce83d81e7a1bbb"
+}

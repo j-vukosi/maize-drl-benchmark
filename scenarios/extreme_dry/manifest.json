@@ -1,0 +1,22 @@
+{
+  "name": "extreme_dry",
+  "description": "Severe historical drought represented by the lowest seasonal-rainfall 15 percent.",
+  "quantile_bounds": {
+    "seasonal_precip_quantile_min": 0.0,
+    "seasonal_precip_quantile_max": 0.15
+  },
+  "train_years": [
+    1984,
+    2002,
+    2003,
+    2012
+  ],
+  "validation_years": [
+    1983
+  ],
+  "test_years": [
+    2000
+  ],
+  "climate_file": "upstreams\\aquacropgymnasium\\weather_data\\champion_climate.txt",
+  "climate_sha256": "416e3596623d7956575055e7db2edc673da6af90cdf2a76993ce83d81e7a1bbb"
+}
