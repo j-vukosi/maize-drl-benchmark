@@ -1,0 +1,157 @@
+Metadata-Version: 2.4
+Name: maize-drl-benchmark
+Version: 1.0.0
+Summary: Reproducible benchmark of PPO, CrossQ, DSAC-T and DreamerV3 for adaptive maize irrigation
+Author: V. J. Maluleke
+Requires-Python: <3.13,>=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy<3,>=1.26
+Requires-Dist: pandas<3,>=2.1
+Requires-Dist: PyYAML<7,>=6.0
+Requires-Dist: scipy<2,>=1.11
+Requires-Dist: matplotlib<4,>=3.8
+Requires-Dist: psutil<8,>=5.9
+Requires-Dist: gymnasium<1.3,>=0.29.1
+Requires-Dist: torch<3,>=2.3
+Requires-Dist: stable-baselines3<3,>=2.7
+Requires-Dist: sb3-contrib<3,>=2.7
+Provides-Extra: dreamer
+Requires-Dist: ray[rllib]<2.57,>=2.48; extra == "dreamer"
+Requires-Dist: tensorflow<2.20,>=2.16; extra == "dreamer"
+Provides-Extra: dev
+Requires-Dist: pytest<9,>=8; extra == "dev"
+Requires-Dist: ruff<1,>=0.9; extra == "dev"
+Requires-Dist: mypy<2,>=1.14; extra == "dev"
+Dynamic: license-file
+
+# Complete Maize DRL Benchmark
+
+A Windows-first, research-grade benchmark of **PPO, CrossQ, DSAC-T and DreamerV3** for adaptive maize irrigation in AquaCrop. It turns the earlier single-seed prototype into a controlled honours-level experiment with five evidence-based scenarios, held-out seasons, multiple seeds, equal environment-interaction budgets, statistical testing, compute accounting and non-learning baselines.
+
+## What is compared
+
+| Algorithm | Paradigm | Primary Windows backend |
+|---|---|---|
+| PPO | on-policy | Stable-Baselines3 |
+| CrossQ | off-policy | SB3-Contrib implementation of the ICLR 2024 method |
+| DSAC-T | distributional off-policy | native PyTorch implementation following the official DSAC-v2 equations |
+| DreamerV3 | model-based world model | Ray RLlib in a separate Python environment |
+
+The supplied official repositories are cloned into `external/`, and their exact commits are recorded. The official Danijar DreamerV3 JAX code remains an optional WSL2/Linux replication track because its repository states Linux/Mac and Python 3.11+ support.
+
+## Five scenarios
+
+The names match the project design and attached folder structure:
+
+- `normal`: 35th–65th percentiles of historical seasonal precipitation;
+- `dry`: 15th–35th percentiles;
+- `extreme_dry`: lowest 15%;
+- `limited_water`: normal-climate years with a 70% reference-irrigation allocation;
+- `wet`: highest 20%.
+
+The recent literature supports the need to test ordinary variability, drought severity, explicit water restriction and wet/waterlogging risk. The exact percentiles are transparent benchmark choices, not claims copied from the articles. See `docs/SCENARIO_EVIDENCE.md`.
+
+## Fair primary protocol
+
+- five seeds: `11, 23, 37, 53, 71`;
+- 512,000 target real AquaCrop environment steps per algorithm × scenario × seed;
+- deterministic train/validation/test year split;
+- one deterministic rollout per held-out seed-year, with inferential tests performed on year-averaged independent seeds;
+- same 26 observations, fixed scaling, normalized `[-1,1]` policy action (mapped to `[0,25]` mm) and reward;
+- no tuning on final test years;
+- paired Friedman and Wilcoxon-Holm analysis on year-averaged training seeds;
+- yield–irrigation Pareto-frequency reporting on detailed seed-year rows;
+- one deterministic evaluation per scenario for each non-learning baseline, avoiding pseudo-replication;
+- wall-clock, memory, hardware, package and upstream-commit manifests.
+
+The source environment uses a binary `0/25 mm` action, while CrossQ and DSAC-T require continuous Box actions and RLlib DreamerV3 assumes a tanh-centred continuous action domain. The primary comparison therefore gives **all four agents** the same normalized `[-1,1]` action, mapped linearly and identically to `0–25 mm` irrigation depth. The original binary action remains a preregistered ablation.
+
+## Windows setup
+
+Open PowerShell in the project folder:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+.\scripts\bootstrap_windows.ps1
+.\scripts\bootstrap_dreamer_windows.ps1
+```
+
+The base script clones all four supplied repositories, creates `.venv` with Python 3.10, installs the AquaCrop/SB3 stack, creates scenario manifests, calibrates the limited-water caps and validates the setup. DreamerV3 uses `.venv_dreamer` with Python 3.11 because its Ray/TensorFlow dependencies are isolated from the base stack.
+
+Run a pipeline smoke test:
+
+```powershell
+.\scripts\run_benchmark.ps1 -Preset smoke
+```
+
+Run the final experiment:
+
+```powershell
+.\scripts\run_benchmark.ps1 -Preset honours -SkipExisting
+```
+
+The honours preset is large: 4 algorithms × 5 scenarios × 5 seeds. The smoke preset confirms functionality only and must not be used for final rankings. It writes to `outputs_smoke/`; the honours preset writes to `outputs/`, so a successful smoke run can never be mistaken for a final run.
+
+## Useful single-run commands
+
+```powershell
+.\.venv\Scripts\python.exe scripts\train.py --algorithm ppo --scenario dry --seed 11 --timesteps 512000
+.\.venv\Scripts\python.exe scripts\evaluate.py --algorithm ppo --scenario dry --seed 11
+
+.\.venv_dreamer\Scripts\python.exe scripts\train.py --algorithm dreamerv3 --scenario dry --seed 11 --timesteps 512000
+.\.venv_dreamer\Scripts\python.exe scripts\evaluate.py --algorithm dreamerv3 --scenario dry --seed 11
+
+.\.venv\Scripts\python.exe scripts\generate_report.py
+```
+
+## Outputs
+
+```text
+outputs/
+  runs/<algorithm>/<scenario>/seed_<seed>/
+  evaluations/all_evaluation_rows.csv
+  evaluations/primary_seed_year_rows.csv
+  evaluations/primary_seed_aggregate_rows.csv
+  summaries/algorithm_scenario_summary.csv
+  summaries/learning_efficiency_summary.csv
+  summaries/compute_summary.csv
+  summaries/interaction_budget_summary.csv
+  summaries/run_completeness.csv
+  statistics/friedman_tests.csv
+  statistics/pairwise_wilcoxon_holm.csv
+  statistics/yield_water_pareto_frequency.csv
+  figures/*.png
+  manifests/execution_plan.json
+  manifests/completion_status.json
+  manifests/*.json
+```
+
+Every trained run stores its resolved configuration, package/hardware manifest, model, training log, evaluation rows, compute record and actual-versus-target interaction budget. Reporting also writes a cell-by-cell completeness audit so missing years, missing seeds or stale smoke-budget runs cannot disappear silently.
+
+## Main metrics
+
+Agronomic/economic: dry yield, irrigation, irrigation water productivity, profit, cumulative stress, stress days and maximum daily stress.
+
+Learning/compute: episode reward, reward-curve AUC against real environment steps, final rolling reward, wall-clock time and peak main-process and process-tree resident memory.
+
+The report does not collapse these into an arbitrary single score. It shows trade-offs and Pareto efficiency.
+
+## Project map
+
+```text
+configs/          frozen benchmark, algorithm and scenario settings
+docs/             experimental protocol, evidence, fairness and reporting guidance
+scenarios/        generated train/validation/test manifests
+scripts/          setup, training, evaluation and reporting entry points
+src/maize_benchmark/
+  envs/           common AquaCrop environment and wrappers
+  algorithms/     PPO/CrossQ runners, full DSAC-T, DreamerV3 runner
+  baselines/      rainfed, soil-moisture and fixed-interval policies
+  reporting/      aggregation, statistics and figures
+tests/            unit and smoke tests
+```
+
+## Scientific status
+
+No fabricated final result is bundled. The uploaded prototype's 3000-step, one-seed results remain preliminary and are not reused as final evidence. This package supplies the complete experiment and reporting pipeline; final rankings are created only from genuine multi-seed runs on the target machine.
