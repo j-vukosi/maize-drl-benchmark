@@ -1,0 +1,13 @@
+algorithm: dreamerv3
+backend: rllib
+model_size: XS
+training_ratio: 32
+batch_size_B: 16
+batch_length_T: 64
+horizon_H: 15
+gamma: 0.997
+num_env_runners: 0
+num_learners: 0
+num_envs_per_env_runner: 1
+checkpoint_interval_steps: 50000
+rollout_fragment_length: 32
