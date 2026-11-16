@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+.venv_dreamer/
+outputs/
+outputs_smoke/
+outputs_*/
+final_logs_corrected/
+smoke_logs/
+*.egg-info/
+build/
+dist/
+final_logs_500000/
+outputs_500000_legacy_source/
