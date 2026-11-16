@@ -105,11 +105,6 @@ def train_sb3(
             raise ValueError(
                 "PPO batch_size must divide n_steps so each rollout has full minibatches."
             )
-        if int(total_timesteps) % rollout_steps != 0:
-            raise ValueError(
-                f"PPO total_timesteps={total_timesteps} must be an exact multiple "
-                f"of n_steps={rollout_steps}; otherwise PPO would overshoot the budget."
-            )
     run_dir = ensure_dir(
         root / benchmark["output_root"] / "runs" / algorithm / scenario / f"seed_{seed}"
     )
@@ -169,7 +164,32 @@ def train_sb3(
     if algorithm == "ppo":
         from stable_baselines3 import PPO
 
-        model = PPO(
+        class ExactBudgetPPO(PPO):
+            def collect_rollouts(self, env, callback, rollout_buffer, n_rollout_steps):
+                # SB3 trains on a full buffer after each collection. Size the
+                # final buffer for the remaining steps so it is full at the budget.
+                remaining_steps = self._total_timesteps - self.num_timesteps
+                remaining_rollout_steps, remainder = divmod(remaining_steps, env.num_envs)
+                if remainder:
+                    raise ValueError(
+                        "PPO training budget must be divisible by the number of environments."
+                    )
+                steps = min(n_rollout_steps, remaining_rollout_steps)
+                if rollout_buffer.buffer_size != steps:
+                    rollout_buffer = type(rollout_buffer)(
+                        steps,
+                        self.observation_space,
+                        self.action_space,
+                        device=self.device,
+                        gamma=self.gamma,
+                        gae_lambda=self.gae_lambda,
+                        n_envs=env.num_envs,
+                        **self.rollout_buffer_kwargs,
+                    )
+                    self.rollout_buffer = rollout_buffer
+                return super().collect_rollouts(env, callback, rollout_buffer, steps)
+
+        model = ExactBudgetPPO(
             "MlpPolicy",
             env,
             learning_rate=cfg["learning_rate"],
