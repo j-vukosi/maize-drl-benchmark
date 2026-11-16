@@ -1,0 +1,45 @@
+project_name: maize_drl_benchmark
+output_root: outputs
+scenario_root: scenarios
+climate_file: external/aquacropgymnasium/weather_data/champion_climate.txt
+planting_date: "05/01"
+season_end: "12/31"
+soil: SandyLoam
+crop: Maize
+
+protocol:
+  seeds: [1, 2, 3]
+  total_timesteps: 1500000
+  eval_episodes_per_year: 1
+  deterministic_evaluation: true
+  checkpoint_interval: 50000
+  action_mode: deficit_fraction
+  action_interface: normalized_minus_one_to_one
+  max_daily_irrigation_mm: 25.0
+  min_irrigation_event_mm: 1.0
+  feature_scaling: fixed_v1
+  reward_version: legacy_source
+  primary_alpha: 0.05
+  bootstrap_resamples: 10000
+  validation_fraction: 0.20
+  test_fraction: 0.20
+
+reward:
+  yield_power: 4.0
+  yield_scale: 1.0
+
+profit:
+  maize_price_per_tonne: 180.0
+  irrigation_cost_per_mm_ha: 1.0
+  fixed_cost_per_ha: 1728.0
+  currency_label: USD
+
+scenarios: [baseline_full]
+algorithms: [ppo, crossq, dsac_t, dreamerv3]
+baselines: [rainfed, soil_moisture_threshold, fixed_interval]
+
+compute:
+  device: auto
+  torch_num_threads: 0
+  resource_sample_every_steps: 250
+  record_peak_memory: true

@@ -1,0 +1,17 @@
+algorithm: dreamerv3
+backend: rllib
+model_size: XS
+training_ratio: 32
+batch_size_B: 16
+batch_length_T: 64
+horizon_H: 15
+gamma: 0.997
+num_env_runners: 0
+num_learners: 0
+num_envs_per_env_runner: 1
+checkpoint_interval_steps: 50000
+rollout_fragment_length: 500
+min_sample_timesteps_per_iteration: 500
+# Retain one intermediate checkpoint during training and only the final
+# checkpoint after a successful run. This avoids 10+ complete copies on disk.
+checkpoint_retention: latest_intermediate_only

@@ -1,0 +1,20 @@
+algorithm: dsac_t
+learning_rate_actor: 0.0003
+learning_rate_critic: 0.0003
+learning_rate_alpha: 0.0003
+buffer_size: 1000000
+learning_starts: 5000
+batch_size: 256
+gamma: 0.99
+tau: 0.005
+tau_b: 0.005
+policy_delay: 2
+auto_alpha: true
+initial_alpha: 0.2
+hidden_sizes: [256, 256]
+updates_per_step: 1
+huber_delta: 50.0
+std_bias: 0.1
+std_ratio_min: 0.1
+std_ratio_max: 10.0
+td_bound_multiplier: 3.0

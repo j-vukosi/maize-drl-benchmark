@@ -1,0 +1,19 @@
+algorithm: ppo
+# Alkaff et al. (2025) PPO tuning, adapted only where 500,000 exact steps
+# require a divisor (paper: n_steps=2048, batch_size=512).
+learning_rate: 0.000634
+n_steps: 2048
+batch_size: 512
+n_epochs: 23
+gamma: 0.98
+gae_lambda: 0.95
+clip_range: 0.22
+ent_coef: 0.00045
+vf_coef: 0.5
+max_grad_norm: 0.5
+policy_hidden: [64, 64]
+activation: relu
+# Reference training used VecNormalize(norm_obs=True, norm_reward=True).
+# Preserve the common fixed feature-scale transformation inside all four models;
+# add adaptive PPO normalization on top to approximate reference PPO training.
+vecnormalize: true
