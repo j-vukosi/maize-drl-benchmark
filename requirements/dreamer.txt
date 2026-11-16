@@ -1,0 +1,14 @@
+﻿# Install the local benchmark package separately with --no-deps; this file
+# contains the complete isolated RLlib/TensorFlow runtime used on Windows.
+numpy>=1.26,<2
+pandas>=2.1,<3
+PyYAML>=6.0,<7
+gymnasium>=1.0,<1.3
+aquacrop==3.1.0
+ray[rllib]==2.49.0
+tensorflow==2.16.1
+tf-keras==2.16.0
+tensorflow-probability==0.24.0
+tensorboard>=2.16,<3
+matplotlib>=3.8,<4
+psutil>=5.9,<8

@@ -1,0 +1,2 @@
+[console_scripts]
+maize-benchmark = maize_benchmark.cli:main
