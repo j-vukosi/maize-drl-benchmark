@@ -75,7 +75,7 @@ This loop runs all three seeds for each algorithm and stops if a command fails.
 
 </details>
 
-Each run saves its checkpoint, `evaluation.csv`, and `interaction_budget.json` under `outputs/runs/<algorithm>/baseline_full/seed_<seed>/`. To evaluate an existing checkpoint, run only the evaluation command with its algorithm and seed. For PPO, keep `vecnormalize.pkl` alongside the checkpoint.
+Each run saves its checkpoint, `evaluation.csv`, and `interaction_budget.json` under `outputs/runs/<algorithm>/baseline_full/seed_<seed>/`. To evaluate an existing checkpoint, run only the evaluation command with its algorithm and seed.
 
 ## 📊 Audit runs and generate reports
 
